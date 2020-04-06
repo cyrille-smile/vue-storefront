@@ -5,36 +5,67 @@
         class="m0 no-outline"
         type="radio"
         :id="id"
-        :checked="value"
+        :checked="checked"
+        :value="value"
+        :name="name"
         @keyup.enter="$emit('click')"
         @click="$emit('click')"
         @blur="$emit('blur')"
-        @change="$emit('change')"
+        @change="$emit('change', $event.target.checked)"
         :disabled="disabled"
       >
       <label
         class="pl35 lh30 h4 pointer"
         :for="id"
       >
-        <slot/>
+        <slot />
       </label>
     </div>
-    <template v-if="validation">
-      <span
-        class="block cl-error h6"
-        v-if="validation.condition"
-      >
-        {{ validation.text }}
-      </span>
-    </template>
+    <ValidationMessages v-if="validations" :validations="validations" />
   </div>
 </template>
 
 <script>
-import BaseRadiobutton from 'core/components/blocks/Form/BaseRadiobutton'
+import ValidationMessages from './ValidationMessages.vue'
 
 export default {
-  mixins: [BaseRadiobutton]
+  name: 'BaseRadiobutton',
+  components: {
+    ValidationMessages
+  },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    checked: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    name: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    validations: {
+      type: Array,
+      default: () => []
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  }
 }
 </script>
 
@@ -60,6 +91,7 @@ export default {
   }
 
   input {
+    display: none;
     position: absolute;
     top: 3px;
     left: 0;
